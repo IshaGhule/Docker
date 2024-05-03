@@ -1,25 +1,52 @@
 import boto3
+import pymysql
+from botocore.exceptions import NoCredentialsError
 
-def read_from_s3():
-    # Initialize Boto3 S3 client
-    s3 = boto3.client('s3')
+def read_data_from_s3(bucket_name, file_name):
+    try:
+        s3 = boto3.client('s3')
+        response = s3.get_object(Bucket='keka-bucket', Key='sales_data_sample.csv')
+        data = response['Body'].read().decode('latin-1', errors='replace')
+        return data
+    except NoCredentialsError as e:
+        print("AWS credentials not found:", e)
+        return None
+
+def push_to_rds(data):
+    try:
+        # Connect to RDS (replace with your RDS configuration)
+        connection = pymysql.connect(host='my-db.cp0yay242i6r.us-east-2.rds.amazonaws.com',
+                                     user='admin',
+                                     password='admin123',
+                                     database='my-db')
+        
+        with connection.cursor() as cursor:
+            # Example: Insert data into RDS table
+            sql = "INSERT INTO your_table (column_name) VALUES (%s)"
+            cursor.execute(sql, (data,))
+        
+        connection.commit()
+        print("Data pushed to RDS successfully")
+    except Exception as e:
+        print("Error pushing data to RDS:", e)
+
+def push_to_glue_database(data):
+    try:
+        # Push data to Glue Database
+        # Replace this with your code to push data to Glue Database
+        print("Data pushed to Glue Database")
+    except Exception as e:
+        print("Error pushing data to Glue Database:", e)
+
+if __name__ == "__main__":
+    # Read data from S3
+    bucket_name = 'keka-bucket'
+    file_name = 'sales_data_sample.csv'
+    data = read_data_from_s3(bucket_name,file_name)
     
-    # Example: Read data from S3 bucket
-    response = s3.get_object(Bucket='keka-bucket', Key='sales_data_sample.csv')
-    data = response['Body'].read()
-
-    # Try decoding using different encodings
-    encodings = ['utf-8', 'iso-8859-1']  # Add more encodings if needed
-    for encoding in encodings:
-        try:
-            decoded_data = data.decode(encoding)
-            return decoded_data
-        except UnicodeDecodeError:
-            continue
-
-    # If none of the encodings work, raise an error
-    raise UnicodeDecodeError("Failed to decode data using any of the specified encodings")
-
-    return data
-
-# Rest of the code remains the same
+    if data:
+        # Push data to RDS
+        push_to_rds(data)
+    else:
+        # If data not available from S3, push to Glue Database
+        push_to_glue_database(data)
