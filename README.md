@@ -32,13 +32,16 @@ export AWS_SECRET_ACCESS_KEY=your_secret_key
 
 Build the Docker image:
 docker build -t demo_image .
+
 Push the Docker image to AWS ECR:
-aws ecr get-login-password --region your_region | docker login --username AWS --password-stdin your_account_id.dkr.ecr.your_region.amazonaws.com
-docker tag s3-to-rds:latest your_account_id.dkr.ecr.us-east-2.amazonaws.com/s3-to-rds:latest
+1. aws ecr get-login-password --region your_region | docker login --username AWS --password-stdin your_account_id.dkr.ecr.your_region.amazonaws.com
+
+2. docker tag s3-to-rds:latest your_account_id.dkr.ecr.us-east-2.amazonaws.com/s3-to-rds:latest
 docker push your_account_id.dkr.ecr.us-east-2.amazonaws.com/s3-to-rds:latest
 
 Deploy AWS resources using Terraform:
 terraform init
+terraform plan
 terraform apply
 
 Set up Jenkins CI/CD pipeline:
