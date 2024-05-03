@@ -1,25 +1,3 @@
-provider "aws" {
-  region = "us-east-2"
-}
-
-# S3 Bucket
-resource "aws_s3_bucket" "isha_bucket" {
-  bucket = "keka-bucket"  # Use the actual name of your bucket
-}
-
-# RDS Instance
-resource "aws_db_instance" "demo_instance" {
-  identifier        = "my-rds-instance"
-  allocated_storage = 20
-  storage_type      = "gp2"
-  engine            = "mysql"
-  engine_version    = "5.7"
-  instance_class    = "db.t3.micro"
-  username          = "admin"
-  password          = "admin123"
-}
-
-# ECR Repository
-resource "aws_ecr_repository" "demo_repository" {
-  name = "my-ecr-repository"
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:e0e578eda7a6ee97333fbfb75e034a9af12730f4128a0022dfc64b028167b73b
+size 598
