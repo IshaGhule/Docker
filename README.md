@@ -23,7 +23,7 @@ Getting Started
 Clone this repository:
 bash
 Copy code
-git clone https://github.com/Docker/docker/.git
+git clone https://github.com/Docker.git
 
 Set up AWS credentials:
 Copy code
